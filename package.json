@@ -1,0 +1,94 @@
+{
+  "name": "orqis",
+  "version": "0.1.0",
+  "description": "Lightweight structured async task orchestration for Node.js \u2014 concurrency control, cancellation, retries, task groups, and observability hooks.",
+  "keywords": [
+    "async",
+    "task",
+    "queue",
+    "concurrency",
+    "orchestration",
+    "abort",
+    "cancel",
+    "retry",
+    "backoff",
+    "timeout",
+    "structured-concurrency",
+    "promise",
+    "build-tool",
+    "cli",
+    "observable",
+    "task-runner",
+    "rate-limit",
+    "priority-queue",
+    "typescript"
+  ],
+  "homepage": "https://github.com/AkkilMG/orqis#readme",
+  "bugs": {
+    "url": "https://github.com/AkkilMG/orqis/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkkilMG/orqis.git"
+  },
+  "license": "MIT",
+  "author": "Akkil M G <me@akkil.dev> (https://akkil.dev)",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./group": {
+      "types": "./dist/group.d.ts",
+      "import": "./dist/group.js",
+      "require": "./dist/group.cjs"
+    },
+    "./plugins": {
+      "types": "./dist/plugins.d.ts",
+      "import": "./dist/plugins.js",
+      "require": "./dist/plugins.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts src/group.ts src/plugins.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run typecheck && npm test",
+    "release": "np",
+    "bench": "node --loader ts-node/esm test/benchmarks.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "eslint": "^8.0.0",
+    "np": "^10.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0",
+    "ts-node": "^10.9.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Strip source maps and declaration maps for the published build check
+    "declarationMap": false,
+    "sourceMap": false,
+    // Ensure only public API types are emitted
+    "stripInternal": true,
+    // Output to dist (tsup handles the actual emit; this is for tsc --noEmit checks)
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "test", "**/*.test.ts"]
+}

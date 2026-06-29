@@ -1,0 +1,26 @@
+# Source & tests — not needed in the published package
+src/
+test/
+docs/
+.github/
+coverage/
+
+# Config files
+tsconfig.json
+tsconfig.build.json
+.eslintrc.*
+.eslintignore
+vitest.config.*
+.editorconfig
+.prettierrc
+
+# Dev files
+*.log
+.DS_Store
+node_modules/
+
+# But DO include (overrides .gitignore):
+!dist/
+!README.md
+!LICENSE
+!CHANGELOG.md

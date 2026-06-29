@@ -1,0 +1,68 @@
+name: Benchmarks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Allow manual trigger for on-demand profiling
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    name: Performance benchmarks (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run benchmarks
+        run: npm run bench 2>&1 | tee bench-results-node${{ matrix.node }}.txt
+        env:
+          # Allow --expose-gc so benchmarks can call gc() for accurate memory readings
+          NODE_OPTIONS: --expose-gc
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-results-node${{ matrix.node }}
+          path: bench-results-node${{ matrix.node }}.txt
+          retention-days: 30
+
+  compare:
+    name: Compare benchmark results across Node versions
+    runs-on: ubuntu-latest
+    needs: benchmark
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: bench-results/
+
+      - name: Print results summary
+        run: |
+          echo "## Benchmark Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          for f in bench-results/*/; do
+            version=$(basename "$f")
+            echo "### $version" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat "$f"/*.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          done
