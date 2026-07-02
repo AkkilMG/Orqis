@@ -54,12 +54,14 @@ export function mergeSignals(signals: AbortSignal[]): AbortSignal {
 export async function runTask<T>(
   descriptor: TaskDescriptor<T>,
   onSettle: DispatchFn,
+  reEnqueue: (desc: TaskDescriptor<T>) => void,
   emit: <K extends string>(event: K, payload?: unknown) => void,
+  queueSignal: AbortSignal,
 ): Promise<void> {
   const { options } = descriptor;
 
   // Build the merged signal for this run
-  const signals: AbortSignal[] = [descriptor.controller.signal];
+  const signals: AbortSignal[] = [descriptor.controller.signal, queueSignal];
   if (options.signal !== undefined) signals.push(options.signal);
 
   // Per-task timeout — create a dedicated controller so we can clear it
@@ -89,10 +91,31 @@ export async function runTask<T>(
   emit('start', { id: options.id });
   const startedAt = Date.now();
 
+  let settled = false;
+
   try {
     const result = await descriptor.fn({ signal: taskSignal });
 
     clearTimeout(timeoutHandle);
+
+    // If the signal was aborted while the task was running (task didn't check
+    // ctx.signal cooperatively), treat completion as cancellation.
+    if (taskSignal.aborted) {
+      const reason: unknown = taskSignal.reason;
+      if (reason instanceof TimeoutError) {
+        emit('error', { id: options.id, error: reason, attempt: descriptor.attempt });
+        descriptor.reject(reason);
+        settled = true;
+        onSettle();
+        return;
+      }
+      emit('cancel', { id: options.id });
+      descriptor.reject(reason instanceof AbortError ? reason : new AbortError());
+      settled = true;
+      onSettle();
+      return;
+    }
+
     emit('success', { id: options.id, result, durationMs: Date.now() - startedAt });
     descriptor.resolve(result);
   } catch (raw: unknown) {
@@ -106,11 +129,13 @@ export async function runTask<T>(
       if (reason instanceof TimeoutError) {
         emit('error', { id: options.id, error: reason, attempt: descriptor.attempt });
         descriptor.reject(reason);
+        settled = true;
         onSettle();
         return;
       }
       emit('cancel', { id: options.id });
-      descriptor.reject(reason instanceof Error ? reason : new AbortError());
+      descriptor.reject(reason instanceof AbortError ? reason : new AbortError());
+      settled = true;
       onSettle();
       return;
     }
@@ -125,11 +150,12 @@ export async function runTask<T>(
       emit('retry', { id: options.id, attempt: descriptor.attempt, delay });
 
       // Free the slot immediately so other tasks can run during backoff
+      settled = true;
       onSettle();
 
-      // Wait out the backoff (respecting the queue's own signal)
+      // Wait out the backoff (respecting merged signals so queue cancel works)
       try {
-        await sleep(delay, descriptor.controller.signal);
+        await sleep(delay, taskSignal);
       } catch {
         // Cancelled during backoff
         emit('cancel', { id: options.id });
@@ -137,12 +163,9 @@ export async function runTask<T>(
         return;
       }
 
-      // Re-enqueue by incrementing attempt and calling onSettle again —
-      // the queue will pick it up from the re-add path.
-      // (queue.ts handles the re-enqueue; we just signal via the descriptor)
+      // Re-enqueue the descriptor for another attempt
       descriptor.attempt++;
-      // Signal the queue to re-run this descriptor (see queue.ts)
-      (descriptor as unknown as { _retry: true })['_retry'] = true;
+      reEnqueue(descriptor);
       return;
     }
 
@@ -150,9 +173,7 @@ export async function runTask<T>(
     descriptor.reject(error);
   } finally {
     clearTimeout(timeoutHandle);
-    // Only call onSettle once — retry path calls it early, normal path here.
-    // The _retry flag tells queue.ts NOT to call it again.
-    if (!(descriptor as unknown as { _retry?: boolean })['_retry']) {
+    if (!settled) {
       onSettle();
     }
   }

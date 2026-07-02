@@ -146,7 +146,7 @@ export class TaskQueue extends EventEmitter {
   get signal(): AbortSignal { return this.#controller.signal; }
 
   add<T>(task: Task<T>, opts: TaskAddOptions = {}): Promise<T> {
-    return new Promise<T>((resolve, reject) => {
+    const promise = new Promise<T>((resolve, reject) => {
       if (this.#controller.signal.aborted) {
         reject(new AbortError());
         return;
@@ -171,6 +171,11 @@ export class TaskQueue extends EventEmitter {
       this.#enqueue(descriptor);
       this.#schedule();
     });
+
+    // Suppress unhandled-rejection warnings for callers that don't attach
+    // a .catch() handler (e.g. when clear()/cancel() rejects pending tasks).
+    promise.catch(() => { /* suppressed */ });
+    return promise;
   }
 
   addAll<T>(tasks: Array<Task<T>>, opts: TaskAddOptions = {}): Promise<T[]> {
@@ -268,7 +273,13 @@ export class TaskQueue extends EventEmitter {
       // Must .catch() — runTask is async; a floating void promise means any
       // internal throw becomes an unhandled rejection that crashes Vitest.
       Promise.resolve()
-        .then(() => runTask(item, () => { this.#onSettle(); }, this.#emit.bind(this)))
+        .then(() => runTask(
+          item,
+          () => { this.#onSettle(); },
+          (desc) => { this.#enqueue(desc as PendingItem<unknown>); this.#schedule(); },
+          this.#emit.bind(this),
+          this.#controller.signal,
+        ))
         .catch((internalErr: unknown) => {
           console.error('[orqis] internal scheduler error', internalErr);
           this.#onSettle();
