@@ -15,6 +15,7 @@ vitest.config.*
 .prettierrc
 
 /resources
+.npmrc
 
 # Dev files
 *.log

@@ -1,7 +1,7 @@
 {
   "name": "orqis",
   "version": "0.1.0",
-  "description": "Lightweight structured async task orchestration for Node.js \u2014 concurrency control, cancellation, retries, task groups, and observability hooks.",
+  "description": "Lightweight structured async task orchestration for Node.js - concurrency control, cancellation, retries, task groups, and observability hooks.",
   "keywords": [
     "async",
     "task",
