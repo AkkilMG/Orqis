@@ -1,0 +1,19 @@
+{
+  "name": "orqis-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Demo project showcasing Orqis async task orchestration",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "start": "node --loader ts-node/esm src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "orqis": "file:../.."
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0"
+  }
+}
