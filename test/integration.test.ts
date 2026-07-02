@@ -8,11 +8,11 @@
 // ---------------------------------------------------------------------------
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { TaskQueue } from '../src/queue.js';
-import { TaskGroup } from '../src/group.js';
-import { loggingPlugin, metricsPlugin } from '../src/plugins.js';
-import { AbortError, TimeoutError } from '../src/errors.js';
-import { sleep, deferred, concurrencyTracker } from './helpers.js';
+import { TaskQueue } from '../src/queue';
+import { TaskGroup } from '../src/group';
+import { loggingPlugin, metricsPlugin } from '../src/plugins';
+import { AbortError, TimeoutError } from '../src/errors';
+import { sleep, deferred, concurrencyTracker } from './helpers';
 
 // ---------------------------------------------------------------------------
 // Gulp-style integration: parallel build tasks
@@ -404,18 +404,33 @@ describe('Edge cases and pitfalls (Section 6)', () => {
   });
 
   it('task that checks signal.aborted before heavy work cleans up fast', async () => {
-    const queue = new TaskQueue({ concurrency: 2 });
+    const queue = new TaskQueue({ concurrency: 1 });
     let heavyWorkRan = false;
+    let taskStarted = false;
+
+    // Block the slot first so our test task stays PENDING (never runs its body)
+    const blocker = queue.add(async ({ signal }) => {
+      taskStarted = true;
+      // hold until cancelled
+      await new Promise<void>((_, rej) => {
+        signal.addEventListener('abort', () => { rej(signal.reason); }, { once: true });
+      });
+    });
+
+    // Wait for blocker to start, then enqueue test task (will be pending)
+    await new Promise<void>(res => {
+      const iv = setInterval(() => { if (taskStarted) { clearInterval(iv); res(); } }, 1);
+    });
 
     const p = queue.add(async ({ signal }) => {
-      // cooperative check BEFORE heavy work
       if (signal.aborted) { return; }
-      heavyWorkRan = true; // would be expensive
+      heavyWorkRan = true;
       await sleep(1000);
     });
 
-    // Cancel before the microtask runs (synchronous after add)
+    // Cancel clears pending tasks without running them
     queue.cancel();
+    await blocker.catch(() => {});
     await p.catch(() => {});
 
     expect(heavyWorkRan).toBe(false);

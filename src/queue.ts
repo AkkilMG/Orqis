@@ -264,10 +264,15 @@ export class TaskQueue extends EventEmitter {
         for (const r of emptyResolvers) { r(); }
       }
 
-      // Use Promise microtask (not setImmediate) so vi.useFakeTimers() works.
-      void Promise.resolve().then(() =>
-        runTask(item, () => { this.#onSettle(); }, this.#emit.bind(this))
-      );
+      // Defer task start to next microtask tick.
+      // Must .catch() — runTask is async; a floating void promise means any
+      // internal throw becomes an unhandled rejection that crashes Vitest.
+      Promise.resolve()
+        .then(() => runTask(item, () => { this.#onSettle(); }, this.#emit.bind(this)))
+        .catch((internalErr: unknown) => {
+          console.error('[orqis] internal scheduler error', internalErr);
+          this.#onSettle();
+        });
     }
   }
 

@@ -1,16 +1,12 @@
 // ---------------------------------------------------------------------------
 // Orqis – retry.test.ts
-// Retry behaviour: attempts, backoff delay, jitter, maxDelay, per-task
-// override, and interaction with events.
+// Real timers throughout (no vi.useFakeTimers) — short fixed delays (10ms)
+// keep the whole suite fast while avoiding fake-timer/pool interaction bugs.
 // ---------------------------------------------------------------------------
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { TaskQueue } from '../src/queue.js';
-import { computeDelay, shouldRetry } from '../src/retry.js';
-
-// ---------------------------------------------------------------------------
-// Unit tests for retry helpers
-// ---------------------------------------------------------------------------
+import { describe, it, expect } from 'vitest';
+import { TaskQueue } from '../src/queue';
+import { computeDelay, shouldRetry } from '../src/retry';
 
 describe('shouldRetry()', () => {
   it('returns false when retryOptions is undefined', () => {
@@ -30,8 +26,7 @@ describe('shouldRetry()', () => {
 
 describe('computeDelay()', () => {
   it('returns fixed delay for type: fixed', () => {
-    const delay = computeDelay(1, { type: 'fixed', delay: 500 });
-    expect(delay).toBe(500);
+    expect(computeDelay(1, { type: 'fixed', delay: 500 })).toBe(500);
   });
 
   it('does not change delay with attempts for fixed type', () => {
@@ -51,8 +46,8 @@ describe('computeDelay()', () => {
     const opt = { type: 'exponential' as const, delay: 100, factor: 2, maxDelay: 300 };
     expect(computeDelay(1, opt)).toBe(100);
     expect(computeDelay(2, opt)).toBe(200);
-    expect(computeDelay(3, opt)).toBe(300); // capped
-    expect(computeDelay(10, opt)).toBe(300); // still capped
+    expect(computeDelay(3, opt)).toBe(300);
+    expect(computeDelay(10, opt)).toBe(300);
   });
 
   it('applies jitter within expected range', () => {
@@ -65,90 +60,75 @@ describe('computeDelay()', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// Integration tests for retry in TaskQueue
-// ---------------------------------------------------------------------------
-
 describe('TaskQueue – retry', () => {
-  beforeEach(() => { vi.useFakeTimers(); });
-  afterEach(() => { vi.useRealTimers(); });
-
   it('retries a task and resolves on eventual success', async () => {
     const queue = new TaskQueue({
-      retry: { attempts: 3, backoff: { type: 'fixed', delay: 100 } },
+      retry: { attempts: 3, backoff: { type: 'fixed', delay: 10 } },
     });
     let calls = 0;
 
-    const p = queue.add(async () => {
+    const result = await queue.add(async () => {
       calls++;
-      if (calls < 3) throw new Error('not yet');
+      if (calls < 3) { throw new Error('not yet'); }
       return 'done';
     });
 
-    await vi.runAllTimersAsync();
-    expect(await p).toBe('done');
+    expect(result).toBe('done');
     expect(calls).toBe(3);
   });
 
   it('rejects after exhausting all retry attempts', async () => {
     const queue = new TaskQueue({
-      retry: { attempts: 2, backoff: { type: 'fixed', delay: 50 } },
+      retry: { attempts: 2, backoff: { type: 'fixed', delay: 10 } },
     });
     let calls = 0;
 
-    const p = queue.add(async () => {
+    await expect(queue.add(async () => {
       calls++;
       throw new Error('always fails');
-    });
+    })).rejects.toThrow('always fails');
 
-    await vi.runAllTimersAsync();
-    await expect(p).rejects.toThrow('always fails');
     expect(calls).toBe(2);
   });
 
   it('emits retry event with correct attempt and delay', async () => {
     const queue = new TaskQueue({
-      retry: { attempts: 3, backoff: { type: 'fixed', delay: 200 } },
+      retry: { attempts: 3, backoff: { type: 'fixed', delay: 10 } },
     });
     const retries: Array<{ attempt: number; delay: number }> = [];
-    queue.on('retry', ({ attempt, delay }) => retries.push({ attempt, delay }));
-    queue.on('error', () => { /* silence */ });
+    queue.on('retry', ({ attempt, delay }) => { retries.push({ attempt, delay }); });
+    queue.on('error', () => { /* prevent unhandled */ });
 
-    const p = queue.add(async () => { throw new Error('fail'); });
-    await vi.runAllTimersAsync();
-    await p.catch(() => {});
+    await queue.add(async () => { throw new Error('fail'); }).catch(() => {});
 
-    expect(retries).toHaveLength(2); // 2 retries for 3 total attempts
-    expect(retries[0]).toMatchObject({ attempt: 1, delay: 200 });
-    expect(retries[1]).toMatchObject({ attempt: 2, delay: 200 });
+    expect(retries).toHaveLength(2);
+    expect(retries[0]).toMatchObject({ attempt: 1, delay: 10 });
+    expect(retries[1]).toMatchObject({ attempt: 2, delay: 10 });
   });
 
   it('per-task retry overrides queue-level retry', async () => {
     const queue = new TaskQueue({
-      retry: { attempts: 5 }, // queue default: 5 attempts
+      retry: { attempts: 5, backoff: { type: 'fixed', delay: 10 } },
     });
     let calls = 0;
 
-    const p = queue.add(
+    await queue.add(
       async () => { calls++; throw new Error('fail'); },
-      { retry: { attempts: 2 } }, // override: only 2
-    );
+      { retry: { attempts: 2, backoff: { type: 'fixed', delay: 10 } } },
+    ).catch(() => {});
 
-    await vi.runAllTimersAsync();
-    await p.catch(() => {});
     expect(calls).toBe(2);
   });
 
   it('does not retry when no retry config is set', async () => {
-    const queue = new TaskQueue(); // no retry
+    const queue = new TaskQueue();
     let calls = 0;
 
-    const p = queue.add(async () => {
+    await expect(queue.add(async () => {
       calls++;
       throw new Error('fail');
-    });
+    })).rejects.toThrow('fail');
 
-    await expect(p).rejects.toThrow('fail');
     expect(calls).toBe(1);
   });
 });

@@ -5,9 +5,9 @@
 // ---------------------------------------------------------------------------
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { TaskQueue } from './queue.js';
-import { TaskGroup } from './group.js';
-import { AbortError } from './errors.js';
+import { TaskQueue } from '../src/queue';
+import { TaskGroup } from '../src/group';
+import { AbortError } from '../src/errors';
 
 const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
 

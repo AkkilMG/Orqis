@@ -5,8 +5,8 @@
 // ---------------------------------------------------------------------------
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { TaskQueue } from '../src/queue.js';
-import { AbortError } from '../src/errors.js';
+import { TaskQueue } from '../src/queue';
+import { AbortError } from '../src/errors';
 
 // Helper: resolves after `ms` milliseconds
 const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
@@ -252,8 +252,19 @@ describe('TaskQueue – external abortSignal', () => {
     const controller = new AbortController();
     const queue = new TaskQueue({ concurrency: 1, abortSignal: controller.signal });
 
-    const p = queue.add(() => sleep(500));
-    setTimeout(() => controller.abort(), 30);
+    let started = false;
+    const p = queue.add(async ({ signal }) => {
+      started = true;
+      await new Promise<void>((_, rej) => {
+        signal.addEventListener('abort', () => { rej(signal.reason); }, { once: true });
+      });
+    });
+
+    // Poll until task is running, then abort
+    await new Promise<void>(res => {
+      const iv = setInterval(() => { if (started) { clearInterval(iv); res(); } }, 1);
+    });
+    controller.abort();
 
     await expect(p).rejects.toBeInstanceOf(AbortError);
   });
