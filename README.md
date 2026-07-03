@@ -8,20 +8,20 @@ Welcome to the Orqis documentation. Choose a topic below.
 
 | Guide | Description |
 |-------|-------------|
-| [Getting Started](./getting-started.md) | Install Orqis and run your first queue in under 5 minutes |
-| [Recipes](./recipes.md) | Copy-paste patterns for common scenarios |
-| [Plugin System](./plugins.md) | Logging, metrics, tracing, and custom middleware hooks |
-| [Migration Guide](./migration.md) | Moving from p-limit, p-queue, async, or fastq |
-| [Testing Guide](./testing.md) | How to write reliable tests for queue-based code |
-| [Architecture](./architecture.md) | How Orqis works internally |
+| [Getting Started](./docs/getting-started.md) | Install Orqis and run your first queue in under 5 minutes |
+| [Recipes](./docs/recipes.md) | Copy-paste patterns for common scenarios |
+| [Plugin System](./docs/plugins.md) | Logging, metrics, tracing, and custom middleware hooks |
+| [Migration Guide](./docs/migration.md) | Moving from p-limit, p-queue, async, or fastq |
+| [Testing Guide](./docs/testing.md) | How to write reliable tests for queue-based code |
+| [Architecture](./docs/architecture.md) | How Orqis works internally |
 
 ## Reference
 
 | Reference | Description |
 |-----------|-------------|
-| [API Reference](./api/README.md) | Full type signatures, options, methods, and events |
-| [Library Comparison](./comparison.md) | Full survey of the Node.js async orchestration ecosystem |
-| [Roadmap](./roadmap.md) | Planned milestones from v0.1 to v2.0 |
+| [API Reference](./docs/api/README.md) | Full type signatures, options, methods, and events |
+| [Library Comparison](./docs/comparison.md) | Full survey of the Node.js async orchestration ecosystem |
+| [Roadmap](./docs/roadmap.md) | Planned milestones from v0.1 to v2.0 |
 
 ---
 
