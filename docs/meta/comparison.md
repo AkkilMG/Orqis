@@ -262,3 +262,21 @@ The survey revealed that **no single package covers all needs** for modern CLI/b
 | **Tiny bundle (< 5 KB)** | p-queue (393 KB publish) | < 5 KB minzipped |
 
 Orqis is positioned between the **simple limiters** (p-limit, @henrygd/queue) and the **heavyweight queues** (Bull, Agenda). It is the right tool when you need reliability features (retry, timeout, cancel) without external infrastructure (Redis, MongoDB).
+
+---
+
+## Decision Matrix
+
+| Scenario | Recommended Library | Why |
+|----------|-------------------|-----|
+| Fetch N URLs with concurrency cap only | **p-limit** or **orqis** | p-limit if you need nothing else; orqis if you might later need retry/cancel |
+| CLI tool that calls 3 flaky APIs with retry | **orqis** | Built-in retry + backoff, zero infra, graceful shutdown |
+| Build script: compile 500 files with progress | **orqis** | Events for progress, concurrency capping, stopOnError for CI |
+| Email queue that must survive server reboot | **BullMQ** | Redis persistence is non-negotiable here |
+| Rate-limit external API calls | **Bottleneck** or **orqis** | Bottleneck for token-bucket; orqis for simpler patterns |
+| Cron jobs ("run every 5 minutes") | **Bree** or **node-cron** | These are purpose-built for scheduling |
+| Test runner parallelizing 1000 test files | **orqis** | Concurrency control + per-task timeout + structured groups |
+| Data pipeline: fetch → transform → store | **orqis** | TaskGroups for each phase, events for monitoring |
+| Observable-based reactive stream | **RxJS** | Purpose-built for stream composition |
+| Legacy Node.js (callback-style) codebase | **async** (caolan/async) | Mature callback support |
+| Serverless function with short-lived tasks | **orqis** | Zero deps, tiny bundle, cold-start friendly |

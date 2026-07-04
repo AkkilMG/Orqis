@@ -8,17 +8,17 @@ Welcome to the Orqis documentation. Choose a topic below.
 
 | Guide | Description |
 |-------|-------------|
-| [Getting Started](./getting-started.md) | Install Orqis and run your first queue in under 5 minutes |
-| [Recipes](./recipes.md) | Copy-paste patterns for common scenarios |
-| [Migration Guide](./migration.md) | Moving from p-limit, p-queue, async, or fastq |
-| [Testing Guide](./testing.md) | How to write reliable tests for queue-based code |
-| [Architecture](./architecture.md) | How Orqis works internally |
+| [Getting Started](./intro/quickstart.md) | Install Orqis and run your first queue in under 5 minutes |
+| [Recipes](./guide/recipes.md) | Copy-paste patterns for common scenarios |
+| [Migration Guide](./guide/migration.md) | Moving from p-limit, p-queue, async, or fastq |
+| [Testing Guide](./guide/testing.md) | How to write reliable tests for queue-based code |
+| [Architecture](./guide/core-concepts.md) | How Orqis works internally |
 
 ## Reference
 
 | Reference | Description |
 |-----------|-------------|
-| [API Reference](./api/README.md) | Full type signatures, options, methods, and events |
+| [API Reference](./api/index.md) | Full type signatures, options, methods, and events |
 
 ---
 

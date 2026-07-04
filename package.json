@@ -1,6 +1,6 @@
 {
   "name": "orqis",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Lightweight structured async task orchestration for Node.js - concurrency control, cancellation, retries, task groups, and observability hooks.",
   "keywords": [
     "async",
@@ -71,7 +71,10 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build && npm run typecheck && npm test",
     "release": "np",
-    "bench": "node --loader ts-node/esm test/benchmarks.ts"
+    "bench": "node --loader ts-node/esm test/benchmarks.ts",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
@@ -80,10 +83,11 @@
     "@vitest/coverage-v8": "^1.0.0",
     "eslint": "^8.0.0",
     "np": "^10.0.0",
+    "ts-node": "^10.9.0",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
-    "vitest": "^1.6.0",
-    "ts-node": "^10.9.0"
+    "vitepress": "^1.6.4",
+    "vitest": "^1.6.0"
   },
   "engines": {
     "node": ">=16.0.0"

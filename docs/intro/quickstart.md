@@ -102,8 +102,8 @@ try {
 
 ## What's Next?
 
-- **[API Reference](./api/README.md)** — full type signatures and options
-- **[Recipes](./recipes.md)** — copy-paste patterns for common scenarios
-- **[Architecture](./architecture.md)** — how Orqis works internally
-- **[Migration Guide](./migration.md)** — moving from p-limit, p-queue, or async
-- **[Testing Guide](./testing.md)** — how to test your queue-based code
+- **[API Reference](../api/index.md)** — full type signatures and options
+- **[Recipes](../guide/recipes.md)** — copy-paste patterns for common scenarios
+- **[Architecture](../guide/core-concepts.md)** — how Orqis works internally
+- **[Migration Guide](../guide/migration.md)** — moving from p-limit, p-queue, or async
+- **[Testing Guide](../guide/testing.md)** — how to test your queue-based code

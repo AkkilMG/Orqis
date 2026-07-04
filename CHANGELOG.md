@@ -9,6 +9,27 @@ Orqis follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Coming soon
+
+- **Retry & Backoff** — configurable retry with exponential/fixed backoff, per-task override, `'retry'` event, and free-slot-during-backoff behaviour.
+- **Priority Queue** — binary max-heap ordering (`priority: true`), higher priority tasks execute first.
+- **TaskGroup** — scoped task batches importable from `orqis/group`, with isolated cancellation and `onComplete()`.
+- **Plugin System** — `OrqisPlugin` lifecycle hooks (`onBefore`, `onAfter`, `onError`, `onCancel`) with built-in `loggingPlugin`, `metricsPlugin`, and `retryObserverPlugin`.
+
+---
+
+## [0.2.0] — 2026-07-05
+
+### Added
+
+- `ctx.signal: AbortSignal` passed to every task for cooperative cancellation.
+- `queue.cancel()` — aborts running tasks and discards pending; creates a new internal `AbortController` so subsequent `add()` calls work immediately.
+- `QueueOptions.abortSignal` — integrate an external `AbortSignal` with the queue.
+- `TaskAddOptions.signal` — per-task external `AbortSignal` support.
+- `timeout` option at queue level (`QueueOptions`) and per-task override (`TaskAddOptions`).
+- `TimeoutError` and `AbortError` error classes (exported from `orqis`).
+- `'timeout'` and `'cancel'` events.
+
 ---
 
 ## [0.1.0] — 2026-07-01
@@ -33,5 +54,6 @@ Orqis follows [Semantic Versioning](https://semver.org/).
 - Dual ESM + CJS package with `exports` conditional exports.
 - Zero production dependencies.
 
-[Unreleased]: https://github.com/AkkilMG/orqis/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/AkkilMG/orqis/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/AkkilMG/orqis/releases/tag/v0.2.0
 [0.1.0]: https://github.com/AkkilMG/orqis/releases/tag/v0.1.0
