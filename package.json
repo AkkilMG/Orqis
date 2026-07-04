@@ -82,7 +82,7 @@
     "@typescript-eslint/parser": "^7.0.0",
     "@vitest/coverage-v8": "^1.0.0",
     "eslint": "^8.0.0",
-    "np": "^10.0.0",
+    "np": "^11.2.1",
     "ts-node": "^10.9.0",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
