@@ -21,7 +21,7 @@ Report vulnerabilities privately via one of:
   Navigate to the [Security tab](https://github.com/AkkilMG/orqis/security/advisories/new)
   of this repository and click "Report a vulnerability".
 
-- **Email**: Send details to **me@akkil.dev**. Encrypt your message with our PGP key if the vulnerability is sensitive.
+- **Email**: Send details to **me@akkil.dev**.
 
 ### What to include
 
@@ -52,6 +52,14 @@ is limited to:
 - Unexpected `AbortController` signal propagation.
 
 Out of scope: vulnerabilities in your own task functions or in the broader Node.js runtime.
+
+## Automated Security Measures
+
+The following automated safeguards are in place across the repository:
+
+- **CodeQL Analysis** — Static application security testing (SAST) runs on every push and pull request to detect vulnerabilities in source code.
+- **npm Audit** — Dependency vulnerability scanning runs in CI, blocking critical-level issues from being merged.
+- **Dependabot** — Automated pull requests are opened weekly to keep npm and GitHub Actions dependencies up to date with the latest security patches.
 
 ## Disclosure Policy
 

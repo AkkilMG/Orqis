@@ -1,0 +1,46 @@
+name: PR Welcome
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  welcome:
+    name: Welcome contributor
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const { owner, repo, number } = context.issue;
+
+            const message = [
+              `Thank you for your contribution! 🎉`,
+              ``,
+              `Your changes are now being automatically tested by our CI pipeline, which runs the following checks:`,
+              ``,
+              `- ✨ **Linting** — code style and consistency`,
+              `- 🔍 **Type checking** — TypeScript strict mode validation`,
+              `- 🧪 **Unit tests** — full test suite with coverage`,
+              `- 🛡️ **Dependency audit** — vulnerability scan via \`npm audit\``,
+              `- 📦 **Build** — compiles TypeScript to ESM + CJS`,
+              ``,
+              `You can track the progress in the **Checks** tab above. ✅`,
+              ``,
+              `A maintainer will do a final review and get back to you as soon as possible. 🙌`,
+              ``,
+              `In the meantime, feel free to check out our [Contributing Guide](https://github.com/${owner}/${repo}/blob/main/CONTRIBUTING.md) if you have any questions.`,
+              ``,
+              `Happy coding! 🚀`
+            ].join('\n');
+
+            github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: number,
+              body: message
+            });
