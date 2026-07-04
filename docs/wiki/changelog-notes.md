@@ -17,6 +17,7 @@ Per-release migration notes, breaking changes, and upgrade instructions. For the
 - `timeout` option (queue-level and per-task)
 - `TimeoutError` and `AbortError` classes
 - `'timeout'` and `'cancel'` events
+- Added complete the docs section (Initial).
 
 ### Breaking changes from v0.1
 

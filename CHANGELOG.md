@@ -29,6 +29,7 @@ Orqis follows [Semantic Versioning](https://semver.org/).
 - `timeout` option at queue level (`QueueOptions`) and per-task override (`TaskAddOptions`).
 - `TimeoutError` and `AbortError` error classes (exported from `orqis`).
 - `'timeout'` and `'cancel'` events.
+- Added complete the docs section (Initial).
 
 ---
 
