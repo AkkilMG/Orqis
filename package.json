@@ -87,7 +87,7 @@
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
     "vitepress": "^1.6.4",
-    "vitest": "^1.6.0"
+    "vitest": "^4.1.9"
   },
   "engines": {
     "node": ">=16.0.0",
