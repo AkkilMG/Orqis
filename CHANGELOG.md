@@ -18,6 +18,14 @@ Orqis follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.2.1] — 2026-07-05
+
+### Added
+
+- Updated `CODE_OF_CONDUCT.md` and `CONTRIBUTION.md`.
+- Added new workflow to facilitate the project.
+- Minor updates
+
 ## [0.2.0] — 2026-07-05
 
 ### Added

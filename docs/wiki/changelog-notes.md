@@ -6,9 +6,34 @@ Per-release migration notes, breaking changes, and upgrade instructions. For the
 
 ## Released
 
-### v0.2.0 — Cancellation & Timeouts (2026-07-05)
+
+## [0.2.1] — Minor Updates & Update in project.
 
 ### What's new
+
+- Updated `CODE_OF_CONDUCT.md` and `CONTRIBUTION.md`.
+- Added new workflow to facilitate the project.
+- Minor updates
+
+---
+
+### v0.1.0 — Initial Release
+
+### What's included
+
+- `TaskQueue` with `concurrency`, `autoStart`, `stopOnError`, and `priority` options
+- `add<T>()` and `addAll<T>()`
+- `onIdle()`, `onEmpty()`
+- `pause()`, `resume()`, `clear()`
+- Events: `start`, `success`, `error`, `idle`, `empty`, `active`
+- Dual ESM + CJS package
+- Zero production dependencies
+- Full TypeScript generics
+
+
+### v0.2.0 — Cancellation & Timeouts (2026-07-05)
+
+### What's included
 
 - `ctx.signal: AbortSignal` passed to every task
 - `queue.cancel()` aborts running tasks and discards pending
@@ -38,20 +63,6 @@ const sig2 = queue.signal; // NEW controller's signal
 
 If you stored `queue.signal` in a variable before calling `cancel()`, that reference is now stale. Always read `queue.signal` lazily (inside the task function via `ctx.signal`, or re-read `queue.signal` after cancel).
 
----
-
-### v0.1.0 — Initial Release
-
-### What's included
-
-- `TaskQueue` with `concurrency`, `autoStart`, `stopOnError`, and `priority` options
-- `add<T>()` and `addAll<T>()`
-- `onIdle()`, `onEmpty()`
-- `pause()`, `resume()`, `clear()`
-- Events: `start`, `success`, `error`, `idle`, `empty`, `active`
-- Dual ESM + CJS package
-- Zero production dependencies
-- Full TypeScript generics
 
 ---
 
