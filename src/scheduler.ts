@@ -20,8 +20,12 @@ export type DispatchFn = () => void;
 export function mergeSignals(signals: AbortSignal[]): AbortSignal {
   // Filter out non-aborted signals first
   const active = signals.filter(Boolean);
-  if (active.length === 0) return new AbortController().signal;
-  if (active.length === 1 && active[0] !== undefined) return active[0];
+  if (active.length === 0) {
+    return new AbortController().signal;
+  }
+  if (active.length === 1 && active[0] !== undefined) {
+    return active[0];
+  }
 
   // Native AbortSignal.any (Node ≥ 20.3)
   if (typeof AbortSignal.any === 'function') {
@@ -62,7 +66,9 @@ export async function runTask<T>(
 
   // Build the merged signal for this run
   const signals: AbortSignal[] = [descriptor.controller.signal, queueSignal];
-  if (options.signal !== undefined) signals.push(options.signal);
+  if (options.signal !== undefined) {
+    signals.push(options.signal);
+  }
 
   // Per-task timeout — create a dedicated controller so we can clear it
   let timeoutHandle: ReturnType<typeof setTimeout> | undefined;

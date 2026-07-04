@@ -52,7 +52,9 @@ export function shouldRetry(
   attempt: number,
   retryOptions: RetryOptions | undefined,
 ): boolean {
-  if (retryOptions === undefined) return false;
+  if (retryOptions === undefined) {
+    return false;
+  }
   return attempt < retryOptions.attempts;
 }
 
