@@ -8,7 +8,6 @@
 
 [![npm version](https://img.shields.io/npm/v/orqis.svg?style=flat-square)](https://www.npmjs.com/package/orqis)
 [![npm downloads](https://img.shields.io/npm/dm/orqis.svg?style=flat-square)](https://www.npmjs.com/package/orqis)
-[![Coverage](https://img.shields.io/codecov/c/github/AkkilMG/orqis?style=flat-square)](https://codecov.io/gh/AkkilMG/orqis)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/orqis?style=flat-square&label=minzipped)](https://bundlephobia.com/package/orqis@0.2.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?style=flat-square)](https://www.typescriptlang.org/)
