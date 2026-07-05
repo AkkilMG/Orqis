@@ -6,6 +6,26 @@ Per-release migration notes, breaking changes, and upgrade instructions. For the
 
 ## Released
 
+## [0.2.2] — Dependency & Tooling Update
+
+### What's new
+
+- Updated all dev dependencies to latest major versions
+  (`@types/node` ^26, `@typescript-eslint/*` ^8, `@vitest/coverage-v8` ^4,
+  `eslint` ^10, `np` ^11, `typescript` ^6, `vitest` ^4).
+- ESLint migrated from `.eslintrc.cjs` to flat config (`eslint.config.js`).
+- Added `"types": ["node"]` and `"ignoreDeprecations": "6.0"` to `tsconfig.json`.
+
+### Fixed
+
+- Removed unused `#concurrency` private field from `TaskGroup`.
+- Fixed `no-empty-object-type` lint warning on `BeforeHookContext`.
+
+### Migration
+
+No breaking changes. If you use a custom ESLint config, note that the project now uses flat config (`eslint.config.js`) — the old `.eslintrc.cjs` has been removed.
+
+---
 
 ## [0.2.1] — Minor Updates & Update in project.
 

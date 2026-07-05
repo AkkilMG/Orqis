@@ -18,6 +18,23 @@ Orqis follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [0.2.2] — 2026-07-06
+
+### Changed
+
+- **Dependencies**: updated all dev dependencies to latest major versions
+  (`@types/node` ^26, `@typescript-eslint/*` ^8, `@vitest/coverage-v8` ^4,
+  `eslint` ^10, `np` ^11, `typescript` ^6, `vitest` ^4).
+- **ESLint**: migrated from `.eslintrc.cjs` to flat config (`eslint.config.js`).
+- **tsconfig**: added `"types": ["node"]` and `"ignoreDeprecations": "6.0"`.
+
+### Fixed
+
+- Removed unused `#concurrency` private field from `TaskGroup`.
+- Fixed `no-empty-object-type` lint warning on `BeforeHookContext`.
+
+---
+
 ## [0.2.1] — 2026-07-05
 
 ### Added
@@ -63,6 +80,8 @@ Orqis follows [Semantic Versioning](https://semver.org/).
 - Dual ESM + CJS package with `exports` conditional exports.
 - Zero production dependencies.
 
-[Unreleased]: https://github.com/AkkilMG/orqis/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/AkkilMG/orqis/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/AkkilMG/orqis/releases/tag/v0.2.2
+[0.2.1]: https://github.com/AkkilMG/orqis/releases/tag/v0.2.1
 [0.2.0]: https://github.com/AkkilMG/orqis/releases/tag/v0.2.0
 [0.1.0]: https://github.com/AkkilMG/orqis/releases/tag/v0.1.0

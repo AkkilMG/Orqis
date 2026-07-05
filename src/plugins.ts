@@ -16,6 +16,7 @@ export interface HookContext<T = unknown> {
   meta: Record<string, unknown>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface BeforeHookContext<T = unknown> extends HookContext<T> {}
 
 export interface AfterHookContext<T = unknown> extends HookContext<T> {

@@ -4,6 +4,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "lib": ["ES2020"],
+    "types": ["node"],
     "outDir": "dist",
     "rootDir": "src",
     "declaration": true,
@@ -14,7 +15,8 @@
     "noImplicitOverride": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "test"]

@@ -9,14 +9,12 @@ import { AbortError } from './errors.js';
 
 export interface GroupOptions {
   id?: string;
-  concurrency?: number;
 }
 
 export class TaskGroup {
   readonly id: string;
 
   readonly #queue: TaskQueue;
-  readonly #concurrency: number;
   readonly #controller: AbortController;
 
   #activeCount = 0;
@@ -27,7 +25,6 @@ export class TaskGroup {
   constructor(queue: TaskQueue, options: GroupOptions = {}) {
     this.#queue       = queue;
     this.id           = options.id ?? randomUUID();
-    this.#concurrency = options.concurrency ?? Infinity;
     this.#controller  = new AbortController();
 
     // Listen on the queue's 'cancel' event (fired by queue.cancel()) rather

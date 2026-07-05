@@ -1,6 +1,6 @@
 {
   "name": "orqis",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Lightweight structured async task orchestration for Node.js - concurrency control, cancellation, retries, task groups, and observability hooks.",
   "keywords": [
     "async",
@@ -67,7 +67,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build && npm run typecheck && npm test",
     "release": "np",
@@ -77,17 +77,19 @@
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "@vitest/coverage-v8": "^1.0.0",
-    "eslint": "^8.0.0",
-    "np": "^10.0.0",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@vitest/coverage-v8": "^4.0.0",
+    "eslint": "^10.0.0",
+    "np": "^11.0.0",
     "ts-node": "^10.9.0",
     "tsup": "^8.0.0",
-    "typescript": "^5.4.0",
+    "typescript": "^6.0.0",
+    "typescript-eslint": "^8.62.1",
     "vitepress": "^1.6.4",
-    "vitest": "^1.6.0"
+    "vitest": "^4.0.0"
   },
   "engines": {
     "node": ">=16.0.0",
